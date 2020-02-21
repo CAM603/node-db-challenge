@@ -26,8 +26,8 @@ router.get('/resources', (req, res) => {
         })
 });
 
-router.get('/tasks', (req, res) => {
-    Projects.getTasks()
+router.get('/:id/tasks', (req, res) => {
+    Projects.getTasks(req.params.id)
         .then(tasks => {
             res.status(200).json(tasks)
         })
