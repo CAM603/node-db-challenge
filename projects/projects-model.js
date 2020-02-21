@@ -17,10 +17,10 @@ function getResources() {
     return db('resources')
 }
 
-function getTasks() {
+function getTasks(id) {
     return db('tasks')
-        .join('projects', 'tasks.project_id', 'projects.id')
-        .select('tasks.description', 'tasks.notes', 'tasks.completed', 'projects.project_name', 'projects.description')
+        .where({id})
+        
 }
 
 function addProject(project) {
