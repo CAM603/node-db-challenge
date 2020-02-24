@@ -72,6 +72,20 @@ router.delete('/projects/:id', (req, res) => {
             res.status(500).json({ error: 'Failed to get projects' })
         })
 })
+// Update Project
+// router.put('/projects/:id', (req, res) => {
+//     const {id} = req.params;
+//     // req.body.project_id = req.params.id;
+
+//     Projects.updateProject(req.body, id)
+//         .then(updated => {
+//             res.status(200).json(updated)
+//         })
+//         .catch(err => {
+//             console.log(err)
+//             res.status(500).json({ error: 'Failed to update project' })
+//         })
+// })
 /////////////////////////// Task routes ////////////////////
 // Get all tasks
 router.get('/tasks', (req, res) => {
@@ -90,7 +104,11 @@ router.get('/tasks/:id', (req, res) => {
 
     Projects.getTaskById(id)
         .then(task => {
-            res.status(200).json(task)
+            if(task) {
+                res.status(200).json(task)
+            } else {
+                res.status(404).json({ message: 'Could not find task with given id.' })
+            }
         })
         .catch(err => {
             console.log(err)
@@ -155,7 +173,11 @@ router.get('/resources/:id', (req, res) => {
 
     Projects.getResourceById(id)
         .then(resource => {
-            res.status(200).json(resource)
+            if(resource) {
+                res.status(200).json(resource)
+            } else {
+                res.status(404).json({ message: 'Could not find resource with given id.'})
+            }
         })
         .catch(err => {
             console.log(err)
