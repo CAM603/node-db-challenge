@@ -1,5 +1,5 @@
 const db = require('../data/dbConfig');
-const knex = require('knex');
+
 module.exports = {
     getProjects,
     getProjectById,
@@ -15,20 +15,20 @@ module.exports = {
 /// Projects
 function getProjects() {
     return db('projects')
-        .innerJoin('tasks', 'projects.id', 'tasks.project_id')
-        .select([
-            'projects.project_name',
-            'projects.description',
-            'users.name as userName',
-            knex.raw('ARRAY_AGG(tasks.notes) as notes')
-        ])
-        .groupBy('projects.project_name','projects.description')
+        .then(res => {
+            return res.map(el => {
+                return {...el, completed: el.completed === 0 ? false : true}
+            })
+        })
 }
 
 function getProjectById(id) {
     return db('projects')
         .where({id})
         .first()
+        .then(res => {
+            return {...res, completed: res.completed === 0 ? false : true}
+        })
 }
 
 function addProject(project) {
@@ -43,12 +43,20 @@ function addProject(project) {
 // Tasks
 function getAllTasks() {
     return db('tasks')
+        .then(res => {
+            return res.map(el => {
+                return {...el, completed: el.completed === 0 ? false : true}
+            })
+        })
 }
 
 function getTaskById(id) {
     return db('tasks')
         .where({id})
         .first()
+        .then(res => {
+            return {...res, completed: res.completed === 0 ? false : true}
+        })
 }
 
 function addTask(project_id, task) {
@@ -74,8 +82,13 @@ function getResourceById(id) {
 function getProjectTasks(project_id) {
     return db('tasks')
         .join('projects', 'tasks.project_id', 'projects.id')
-        .select('projects.project_name', 'projects.description as project_description', 'tasks.description as task_description', 'tasks.notes as task_notes')
+        .select('projects.project_name', 'projects.description as project_description', 'tasks.description as task_description', 'tasks.notes as task_notes', 'tasks.completed')
         .where({project_id: project_id})
+        .then(res => {
+            return res.map(el => {
+                return {...el, completed: el.completed === 0 ? false : true}
+            })
+        })
 }
 
 function addResource(resource) {
