@@ -10,7 +10,8 @@ module.exports = {
     getProjectTasks,
     addProject,
     addResource,
-    addTask
+    addTask,
+    removeProject
 }
 /// Projects
 function getProjects() {
@@ -27,7 +28,11 @@ function getProjectById(id) {
         .where({id})
         .first()
         .then(res => {
-            return {...res, completed: res.completed === 0 ? false : true}
+            if(res) {
+                return {...res, completed: res.completed === 0 ? false : true}
+            } else {
+                return null
+            }
         })
 }
 
@@ -39,6 +44,11 @@ function addProject(project) {
 
             return getProjectById(id)
         })
+}
+function removeProject(id) {
+    return db('projects')
+        .where({id})
+        .del()
 }
 // Tasks
 function getAllTasks() {

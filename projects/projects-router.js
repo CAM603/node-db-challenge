@@ -44,6 +44,34 @@ router.post('/projects', (req, res) => {
             res.status(500).json({ error: 'Failed to add project' })
         })
 })
+// Delete project
+router.delete('/projects/:id', (req, res) => {
+    const {id} = req.params;
+
+    Projects.getProjectById(id)
+        .then(project => {
+            if(project) {
+                Projects.removeProject(id)
+                    .then(deleted => {
+                        if(deleted) {
+                            res.status(200).json({deleted: project})
+                        } else {
+                            res.status(404).json({ message: 'Failed to find project with given id' })
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        res.status(500).json({ mesage: 'Failed to delete project' })
+                    })
+            } else {
+                res.status(404).json({ message: 'Could not find project with given id.' })
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: 'Failed to get projects' })
+        })
+})
 /////////////////////////// Task routes ////////////////////
 // Get all tasks
 router.get('/tasks', (req, res) => {
